@@ -66,10 +66,16 @@ echo "<script> alert('Los campos estan vacios');</script>";
            <input class="border border-info" type="text" name="documento" placeholder="Documento" value="<?php if($resultado) echo $resultado['documento']; ?>"><br><br>
            <input class="border border-success" type="text" name="usuario" placeholder="Usuario" value="<?php if($resultado) echo $resultado['usuario']; ?>"><br><br>
            <label for="rol"><b>Seleccione un rol:</b></label>
-            <select name="rol" id="rol" class="btn btn-outline-warning">
-              <option value="1">Administrador</option>
-              <option value="2">Operario</option>
-            </select><br><br>
+           <select id="rol" name="rol">
+          <option placeholder="0">Rol o Cargo</option>
+           <?php
+            $query = $con-> prepare ('SELECT * FROM perfil');
+             $query->execute();
+              foreach ($query as $valores){
+                echo '<option value= "'.$valores['idPerfil'].'">'.$valores['nombrePerfil'].'</option>';
+                }
+            ?>
+         </select><br><br>
             <label for="privilegio"><b>Estado:</b></label>
             <select name="privilegio" id="privilegio"  class="btn btn-outline-primary">
               <option value="activo">activo</option>

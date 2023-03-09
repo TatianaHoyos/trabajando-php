@@ -39,23 +39,26 @@
   <body style="background-color:#C1EDE6;">
  <div class=" text-center  p-2 g-col-6 ">
     <div >
+      
       <h2><i>Registrar Usuario</i></h2> 
-       <form name="form" action="" method="post" onsubmit="return validar()">
+       <form id="form" name="form" action="" method="post">
           <div class=" p-2 g-col-6">
-            <input type="text" name="documento" placeholder="Documento"   class="border border-info"><br><br>
-            <input type="text" name="usuario" placeholder="Usuario"   class="border border-success"><br><br>
+            <input type="text" id="documento" name="documento" placeholder="Documento"   class="border border-info" onkeypress="return validarNumero(event)"><br><br>
+            <input type="text" id="usuario" name="usuario" placeholder="Usuario"   class="border border-success" onkeypress="return sololetras(event)"><br><br>
             <label for="rol"><b>Seleccione un rol:</b></label>
-              <select name="rol" id="rol" class="btn btn-outline-warning">
-                <option value="1">Administrador</option>
-                <option value="2">Operario</option>
-              </select><br>
+             <select id="rol" name="rol">
+          <option placeholder="0">Rol o Cargo</option>
+           <?php
+            $query = $con-> prepare ('SELECT * FROM perfil');
+             $query->execute();
+              foreach ($query as $valores){
+                echo '<option value= "'.$valores['idPerfil'].'">'.$valores['nombrePerfil'].'</option>';
+                }
+            ?>
+         </select>
+     <br>
               <input type="hidden" name="privilegio" value="activo" placeholder="privilegio" class="border border-info"><br><br>
-              <!--<label for="privilegio">Estado:</label>
-              <select name="privilegio" id="privilegio">
-                <option value="activo">activo</option>
-                <option value="inactivo">inactivo</option>
-              </select>-->
-              <input type="password" name="password" placeholder="password"  class="border border-info">
+              <input type="password" id="password" name="password" placeholder="password"  class="border border-info" onkeypress="return contrasena(event)">
           </div>   
 
           <div>
@@ -66,9 +69,106 @@
      </div>
     <div align="justify"></div>
   </div>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script>
+    function validarNumero(e){
+            tecla = (document.all) ? e.keyCode : e.which;
+            if (tecla==8) return true;
+            patron =/[0-9]/;
+            te = String.fromCharCode(tecla);
+            return patron.test(te)
+        }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    function sololetras(e){
+            key= e.keyCode || e.which;
+            tecla = String.fromCharCode(key).toLowerCase();
+            letras = "àèìòùabcdefghijklmnñopqrstuvwxyz";
+            especiales = "8-37-38-46-164";
 
+            tecla_especial = false
+            for(var i in especiales){
+                if(key == especiales[i]){
+                    tecla_especial = true;
+                    break;
+                }
+            }
+
+            if(letras.indexOf(tecla)==-1 && !tecla_especial){
+                return false;
+            }
+        }
+
+    function contrasena(e){
+          key1= e.keyCode || e.which;
+          tecla1 = String.fromCharCode(key1).toLowerCase();
+          contrasena1 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYZ0123456789";
+          especialesContra = "8-34-35-36-37-38-43-45-46-164-64";
+          tecla_contra = false;
+            for(var i in especialesContra){
+                if(key1 == especialesContra[i]){
+                    tecla_contra = true;
+                    break;
+                }
+            }
+
+            if(contrasena1.indexOf(tecla1)==-1 && !tecla_contra){
+                return false;
+            }
+        }
+  </script>
+    <script>
+
+       $("#form").submit(function(){
+        if($("#documento").val().length <1)
+      {
+          Swal.fire({
+            icon: 'warning',
+            title:'Oops',
+            text:'Debe ingresar documento',
+            footer:'<p> Sistema de informacion</p>'
+          })
+          return false;
+      }
+
+      if($("#usuario").val().length<1)
+        {
+          Swal.fire({
+            icon: 'warning',
+            title:'Error',
+            text:'Por favor ingrese un usuario',
+            footer:'<p> Sistema de informacion</p>'
+          })
+          return false;
+        }
+
+        var valueInt = parseInt($("#rol").val());
+        if(!Number.isInteger(valueInt))
+        {
+          Swal.fire({
+            icon: 'warning',
+            title:'Error',
+            text:'Por favor seleccione un rol para usuario',
+            footer:'<p> Sistema de informacion</p>'
+          })
+          return false;
+        }
+
+      if($("#password").val().length <1)
+      {
+          Swal.fire({
+            icon: 'warning',
+            title:'Oops',
+            text:'Debe ingresar una contrasena',
+            footer:'<p> Sistema de informacion</p>'
+          })
+          return false;
+      }
+     
+     
+    });
+    </script>
   <body> <br> <br>  <br>
   
 </html>
