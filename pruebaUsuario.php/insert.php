@@ -1,5 +1,6 @@
 <?php
       include_once 'conexion.php';
+      $saveSucess=false;
  
      if(isset($_POST['guardar'])){
          $usuario=$_POST['usuario'];
@@ -19,9 +20,10 @@
           ':rol' =>$rol,
           ':privilegio' =>$privilegio,
           ));
-          header('Location: index.php'); }
-
-      else{
+          $saveSucess=true;
+          //echo "<script type='text/javascript'> saveUser(); </script>";
+          //header('Location: index.php'); 
+        } else {
       echo "<script> alert('Los campos estan vacios');</script>";
       } }
     ?>
@@ -119,6 +121,23 @@
         }
   </script>
     <script>
+      $(document).ready(function (){
+        <?php 
+          if ($saveSucess) {
+            echo "saveUserSuccessful();";
+          }
+          ?>
+      });
+      function saveUserSuccessful() {
+        Swal.fire({
+            icon: 'success',
+            title:'Usuario guardado exitosamente',
+            confirmButtonText: 'Confirmar'
+          }).then((result) => {
+            //redirect
+            $(location).attr('href','index.php');
+        })
+      }
 
        $("#form").submit(function(){
         if($("#documento").val().length <1)
